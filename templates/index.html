@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoomHub | Control Panel</title>
+    <style>
+        :root {
+            --primary: #2d3436;
+            --accent: #0984e3;
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --border: #dcdde1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SETUP SCREEN --- */
+        #setup-screen {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 400px;
+            text-align: center;
+            border: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .setup-logo {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            color: var(--primary);
+        }
+
+        .theme-info {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            background: #fafafa;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn-get-started {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .btn-get-started:hover { background: #000; transform: translateY(-2px); }
+
+        /* --- DASHBOARD --- */
+        #dashboard {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: row;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            color: #636e72;
+        }
+
+        .nav-item:hover { background: #f1f2f6; color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .card-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .console {
+            background: #1e272e;
+            color: #0be881;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            height: 150px;
+            margin-top: 25px;
+            font-size: 12px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+
+        h3 { margin-top: 0; font-size: 16px; color: #2d3436; }
+    </style>
+</head>
+<body>
+
+    <div id="setup-screen">
+        <div class="setup-logo">DOOMHUB</div>
+        <div class="theme-info">White Theme Active</div>
+        
+        <input type="text" id="user-name" placeholder="Enter Name (e.g. yoyo)">
+        <input type="password" id="user-token" placeholder="Enter Discord Token">
+        
+        <button class="btn-get-started" onclick="startApp()">Get Started</button>
+    </div>
+
+    <div id="dashboard">
+        <div class="sidebar">
+            <div class="setup-logo" style="font-size: 20px; text-align: left; margin-bottom: 40px;">DOOMHUB</div>
+            <div class="nav-item active">Dashboard</div>
+            <div class="nav-item">Server Actions</div>
+            <div class="nav-item">Webhook Spammer</div>
+            <div class="nav-item">Post Spammer</div>
+            <div class="nav-item">Settings</div>
+            <div style="margin-top: auto; font-size: 12px; color: #b2bec3; padding: 10px;">User: <span id="display-name" style="color:var(--accent)"></span></div>
+        </div>
+
+        <div class="main-content">
+            <h1 id="welcome-msg" style="margin-bottom: 30px;">Welcome back</h1>
+            
+            <div class="card-row">
+                <div class="action-card">
+                    <h3>Server Nuker</h3>
+                    <input type="text" id="guild_id" placeholder="Target Guild ID">
+                    <button onclick="sendAction('nuke')" style="background: #ff7675; color: white; border:none; padding:12px; border-radius:6px; cursor:pointer; width:100%; font-weight:bold;">Nuke Channels</button>
+                </div>
+
+                <div class="action-card">
+                    <h3>Webhook Attack</h3>
+                    <input type="text" id="webhook_url" placeholder="Webhook URL">
+                    <input type="text" id="webhook_msg" placeholder="Message content">
+                    <input type="number" id="webhook_count" placeholder="Amount" value="50">
+                    <button onclick="sendAction('webhook')" style="background: var(--primary); color: white; border:none; padding:12px; border-radius:6px; cursor:pointer; width:100%; font-weight:bold;">Start Spam</button>
+                </div>
+            </div>
+
+            <div class="console" id="log-box">
+                [SYSTEM] DoomHub Engine Initialized...<br>
+                [SYSTEM] Waiting for commands...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function writeLog(msg) {
+            const logBox = document.getElementById('log-box');
+            const time = new Date().toLocaleTimeString();
+            logBox.innerHTML += `<br>[${time}] ${msg}`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        async function startApp() {
+            const name = document.getElementById('user-name').value;
+            const token = document.getElementById('user-token').value;
+
+            if(!name || !token) {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            // Backend'e gönderip doğrulama yapıyoruz
+            const response = await fetch('/api/setup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, token})
+            });
+
+            if(response.ok) {
+                document.getElementById('setup-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'flex';
+                document.getElementById('display-name').innerText = name;
+                document.getElementById('welcome-msg').innerText = "Welcome back, " + name;
+                writeLog("Authenticated as " + name);
+            } else {
+                alert("Invalid Token! Authentication failed.");
+            }
+        }
+
+        async function sendAction(type) {
+            let data = { type: type };
+            
+            if(type === 'webhook') {
+                data.url = document.getElementById('webhook_url').value;
+                data.msg = document.getElementById('webhook_msg').value;
+                data.count = document.getElementById('webhook_count').value;
+            } else if(type === 'nuke') {
+                data.guild_id = document.getElementById('guild_id').value;
+            }
+
+            await fetch('/api/action', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            writeLog("Action '" + type + "' sent to backend.");
+        }
+    </script>
+</body>
+</html>
+
