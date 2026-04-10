@@ -2,742 +2,317 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DOOMHUB | THE ULTIMATE KERNEL v4.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoomHub Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* =========================================
-           DOOMHUB KERNEL CSS STYLESHEET
-           UNCOMPRESSED & EXPANDED FOR MAXIMUM FLEX
-           ========================================= */
-
-        :root {
-            --primary-bg: #ffffff;
-            --secondary-bg: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent-blue: #2563eb;
-            --accent-blue-hover: #1d4ed8;
-            --accent-red: #dc2626;
-            --accent-red-hover: #b91c1c;
-            --success: #16a34a;
-            --terminal-bg: #020617;
-            --terminal-text: #94a3b8;
-        }
-
-        /* Base Resets & Typography */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--primary-bg); 
-            color: var(--text-main); 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-        }
-
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Custom Scrollbar for that premium feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--secondary-bg); 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
-
-        /* =========================================
-           SIDEBAR STYLING
-           ========================================= */
-        .sidebar { 
-            width: 300px; 
-            border-right: 1px solid var(--border-color); 
-            display: flex; 
-            flex-direction: column; 
-            background: var(--primary-bg); 
-            z-index: 50; 
-            box-shadow: 4px 0 24px rgba(0,0,0,0.02);
-        }
-
-        .brand-container {
-            padding: 32px;
-            border-bottom: 1px solid var(--secondary-bg);
-        }
-
-        .brand-title {
-            font-size: 2.25rem;
-            font-weight: 900;
-            font-style: italic;
-            letter-spacing: -1px;
-            background: linear-gradient(to right, #0f172a, #334155);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-category {
-            padding: 0 24px;
-            margin-top: 32px;
-            margin-bottom: 12px;
-            font-size: 0.65rem;
-            font-weight: 900;
-            color: #cbd5e1;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-        }
-
-        .nav-link { 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            padding: 16px 24px; 
-            margin: 4px 16px; 
-            border-radius: 12px; 
-            font-size: 0.9rem; 
-            font-weight: 700; 
-            color: var(--text-muted); 
-            cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link:hover { 
-            background: var(--secondary-bg); 
-            color: var(--text-main); 
-            transform: translateX(4px);
-        }
-
-        .nav-link.active { 
-            background: #eff6ff; 
-            color: var(--accent-blue); 
-            box-shadow: inset 4px 0 0 var(--accent-blue);
-        }
-
-        /* =========================================
-           MAIN CONTENT AREA
-           ========================================= */
-        .main-content { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            background: #f8fafc; 
-            overflow-y: auto; 
-            position: relative;
-        }
-
-        .header-bar {
-            height: 80px; 
-            background: rgba(255, 255, 255, 0.9); 
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color); 
-            padding: 0 40px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 40;
-        }
-
-        .header-title {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-
-        /* Glassmorphic Cards */
-        .doom-card { 
-            background: var(--primary-bg); 
-            border: 1px solid var(--border-color); 
-            border-radius: 24px; 
-            padding: 32px; 
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); 
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .doom-card:hover {
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08); 
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Forms and Inputs */
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-label {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 900;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-            margin-left: 4px;
-        }
-
-        .doom-input { 
-            width: 100%; 
-            background: var(--primary-bg); 
-            border: 2px solid #e2e8f0; 
-            padding: 16px 20px; 
-            border-radius: 16px; 
-            font-size: 0.9rem; 
-            font-weight: 600;
-            color: var(--text-main);
-            outline: none; 
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-
-        .doom-input::placeholder {
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-
-        .doom-input:focus { 
-            border-color: var(--accent-blue); 
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
-            transform: translateY(-2px);
-        }
-
-        /* Big Chunky Buttons */
-        .doom-btn { 
-            background: var(--accent-blue); 
-            color: white; 
-            width: 100%;
-            padding: 18px 24px; 
-            border-radius: 16px; 
-            font-weight: 900; 
-            font-size: 0.95rem;
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer; 
-            border: none;
-            border-bottom: 6px solid var(--accent-blue-hover); 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .doom-btn:active { 
-            transform: translateY(4px); 
-            border-bottom-width: 2px; 
-            margin-bottom: 4px;
-        }
-
-        .doom-btn.danger {
-            background: var(--accent-red);
-            border-bottom-color: var(--accent-red-hover);
-        }
-
-        /* =========================================
-           TERMINAL & ANIMATIONS
-           ========================================= */
-        .terminal-container { 
-            background: var(--terminal-bg); 
-            border-radius: 20px; 
-            padding: 24px; 
-            font-family: 'JetBrains Mono', monospace; 
-            font-size: 0.8rem; 
-            color: var(--terminal-text); 
-            height: 350px; 
-            overflow-y: auto; 
-            border: 1px solid #1e293b;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .terminal-container::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
-
-        .log-line { margin-bottom: 6px; line-height: 1.4; }
-        .log-time { color: #475569; margin-right: 8px; }
-        .log-info { color: #3b82f6; font-weight: 700; }
-        .log-success { color: #22c55e; font-weight: 700; }
-        .log-warn { color: #eab308; font-weight: 700; }
-        .log-danger { color: #ef4444; font-weight: 700; }
-
-        .tab-pane { display: none; opacity: 0; }
-        .tab-pane.active { display: block; animation: slideUpFade 0.4s ease forwards; }
-
-        @keyframes slideUpFade { 
-            0% { opacity: 0; transform: translateY(20px); } 
-            100% { opacity: 1; transform: translateY(0); } 
-        }
-
-        /* Auth Screen */
-        #auth-gate { 
-            position: fixed; inset: 0; background: var(--primary-bg); z-index: 1000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        }
-        
-        .grid-layout { display: grid; gap: 32px; }
-        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-
+        * { font-family: 'Inter', sans-serif; }
+        .glow { box-shadow: 0 0 30px rgba(239, 68, 68, 0.2); }
+        .gradient-bg { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(239, 68, 68, 0.3); }
+        .input-focus:focus { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3); }
+        .progress-bar { transition: width 0.5s ease; }
     </style>
 </head>
-<body>
-
-    <div id="auth-gate">
-        <div class="w-full max-w-lg p-12 text-center doom-card border-2 border-blue-100 shadow-2xl">
-            <div class="w-20 h-20 bg-blue-600 rounded-2xl mx-auto mb-8 flex items-center justify-center transform rotate-12 shadow-lg shadow-blue-200">
-                <span class="text-white text-4xl font-black italic -rotate-12">DH</span>
+<body class="gradient-bg text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-800">
+            <div>
+                <h1 class="text-5xl font-bold bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
+                    DoomHub
+                </h1>
+                <p class="text-gray-400 mt-2 text-lg">Advanced Discord Automation Suite</p>
             </div>
-            <h1 class="text-6xl font-black italic tracking-tighter mb-2 text-gray-900">DOOMHUB</h1>
-            <p class="text-xs font-black text-gray-400 tracking-[0.3em] mb-12 uppercase">SELF BOT</p>
-            
-            <div class="space-y-6 text-left">
-                <div class="input-group">
-                    <label class="input-label">NAME</label>
-                    <input type="text" id="op-name" placeholder="E.g I LOVE DOOMHUB..." class="doom-input text-center text-lg font-black tracking-widest">
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2">
+                    <div class="h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-sm text-gray-400">System Online</span>
                 </div>
-                <div class="input-group">
-                    <label class="input-label">ACCOUNT TOKEN</label>
-                    <input type="password" id="op-token" placeholder="••••••••••••••••" class="doom-input text-center text-2xl tracking-widest mono">
-                </div>
-                <button onclick="systemBootSequence()" class="doom-btn mt-8 text-lg py-5">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    LOGIN
-                </button>
-            </div>
-        </div>
-        <p class="mt-12 text-[10px] text-gray-400 font-bold tracking-[4px] uppercase">Encrypted Connection Established</p>
-    </div>
-
-    <aside class="sidebar">
-        <div class="brand-container">
-            <h2 class="brand-title">DOOMHUB</h2>
-            <div class="flex items-center gap-3 mt-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                <div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)] animate-pulse"></div>
-                <div>
-                    <p id="nav-user" class="text-[11px] font-black text-gray-900 uppercase tracking-widest leading-none mb-1">AWAITING LOGIN</p>
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Network: Secure</p>
+                <div class="h-8 w-px bg-gray-700"></div>
+                <div class="text-sm text-gray-400">
+                    <span id="currentTime"></span>
                 </div>
             </div>
         </div>
-
-        <nav class="flex-1 overflow-y-auto py-4">
-            <div class="nav-category">Core Monitoring</div>
-            <div onclick="switchModule('dash')" id="l-dash" class="nav-link active">
-                <span class="text-xl">📊</span> <span>Main Dashboard</span>
-            </div>
-            
-            <div class="nav-category">Offensive Protocols</div>
-            <div onclick="switchModule('spam')" id="l-spam" class="nav-link">
-                <span class="text-xl">🚀</span> <span>Mass Spam Engine</span>
-            </div>
-            <div onclick="switchModule('nuke')" id="l-nuke" class="nav-link">
-                <span class="text-xl">☢️</span> <span>Server Annihilation</span>
-            </div>
-            <div onclick="switchModule('web')" id="l-web" class="nav-link">
-                <span class="text-xl">🔗</span> <span>Webhook Striker</span>
-            </div>
-            <div onclick="switchModule('thread')" id="l-thread" class="nav-link">
-                <span class="text-xl">🧵</span> <span>Thread Deployer</span>
-            </div>
-
-            <div class="nav-category">System Settings</div>
-            <div onclick="switchModule('config')" id="l-config" class="nav-link">
-                <span class="text-xl">⚙️</span> <span>Configuration</span>
-            </div>
-        </nav>
-
-        <div class="p-8 border-t border-gray-100 bg-gray-50">
-            <p class="text-[9px] font-black text-gray-400 tracking-[0.2em] text-center uppercase">© 2026 Developed by Tader</p>
-            <p class="text-[8px] font-bold text-gray-300 tracking-[0.1em] text-center uppercase mt-2">Build 400.197.X</p>
-        </div>
-    </aside>
-
-    <main class="main-content">
         
-        <header class="header-bar">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center font-black text-xl shadow-inner">
-                    <span id="header-icon">📊</span>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-gray-800/40 backdrop-blur rounded-lg p-5 border border-gray-700 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-400 mb-1">Active Proxies</div>
+                        <div class="text-3xl font-bold text-red-500" id="proxyCount">-</div>
+                    </div>
+                    <div class="h-12 w-12 bg-red-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
                 </div>
-                <h3 id="head-title" class="header-title">MAIN DASHBOARD</h3>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black text-gray-400 uppercase">Latency:</span>
-                    <span class="text-[12px] font-black text-green-500 mono bg-green-50 px-2 py-1 rounded-md">24ms</span>
-                </div>
-                <button class="bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-lg uppercase tracking-widest hover:bg-gray-800 transition">
-                    EMERGENCY STOP
-                </button>
-            </div>
-        </header>
-
-        <div class="p-10 pb-32">
             
-            <div id="tab-dash" class="tab-pane active">
-                <div class="grid-layout grid-cols-3 mb-8">
-                    <div class="doom-card border-b-4 border-b-blue-500">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Payloads Delivered</p>
-                        <h4 id="stat-payloads" class="text-5xl font-black mt-4 text-gray-900">0</h4>
+            <div class="bg-gray-800/40 backdrop-blur rounded-lg p-5 border border-gray-700 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-400 mb-1">Active Tasks</div>
+                        <div class="text-3xl font-bold text-red-500" id="taskCount">-</div>
                     </div>
-                    <div class="doom-card border-b-4 border-b-green-500">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Operations</p>
-                        <h4 class="text-5xl font-black mt-4 text-gray-900">0</h4>
-                    </div>
-                    <div class="doom-card border-b-4 border-b-purple-500">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">System Status</p>
-                        <h4 class="text-4xl font-black mt-4 text-green-500 italic">SECURE</h4>
-                    </div>
-                </div>
-
-                <div class="doom-card bg-white p-0 overflow-hidden">
-                    <div class="bg-gray-900 px-6 py-4 flex justify-between items-center border-b border-gray-800">
-                        <h5 class="text-xs font-black text-white uppercase tracking-widest">Global Execution Console</h5>
-                        <div class="flex gap-2">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                    </div>
-                    <div id="console" class="terminal-container rounded-none border-none"></div>
-                </div>
-            </div>
-
-            <div id="tab-spam" class="tab-pane">
-                <div class="grid-layout grid-cols-3">
-                    <div class="doom-card col-span-2">
-                        <h4 class="card-title">🚀 Advanced Spam Engine</h4>
-                        
-                        <div class="input-group">
-                            <label class="input-label">Target Channel ID</label>
-                            <input type="text" id="spam-target" class="doom-input" placeholder="e.g., 123456789012345678">
-                        </div>
-
-                        <div class="input-group">
-                            <label class="input-label">Message Payload Content</label>
-                            <textarea id="spam-msg" class="doom-input h-48 resize-none" placeholder="Enter the text to be repeatedly sent..."></textarea>
-                        </div>
-
-                        <div class="grid-layout grid-cols-2">
-                            <div class="input-group">
-                                <label class="input-label">Execution Count</label>
-                                <input type="number" id="spam-count" class="doom-input" value="100">
-                            </div>
-                            <div class="input-group">
-                                <label class="input-label">Delay Strategy (ms)</label>
-                                <input type="number" id="spam-delay" class="doom-input" value="250">
-                            </div>
-                        </div>
-
-                        <button onclick="executeSpamAttack()" class="doom-btn mt-6">
-                            INITIATE SPAM SEQUENCE
-                        </button>
-                    </div>
-                    
-                    <div class="doom-card bg-gray-50 border-dashed border-2">
-                        <h5 class="text-sm font-black uppercase mb-6 text-gray-500">Engine Configuration</h5>
-                        <div class="space-y-4">
-                            <label class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 cursor-pointer">
-                                <input type="checkbox" class="w-5 h-5 accent-blue-600" checked>
-                                <span class="text-xs font-bold text-gray-700">Auto-Bypass Rate Limits</span>
-                            </label>
-                            <label class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 cursor-pointer">
-                                <input type="checkbox" class="w-5 h-5 accent-blue-600">
-                                <span class="text-xs font-bold text-gray-700">Randomize Delay (Jitter)</span>
-                            </label>
-                            <label class="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 cursor-pointer">
-                                <input type="checkbox" class="w-5 h-5 accent-blue-600">
-                                <span class="text-xs font-bold text-gray-700">Append Random Strings</span>
-                            </label>
-                        </div>
+                    <div class="h-12 w-12 bg-red-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
-
-            <div id="tab-nuke" class="tab-pane">
-                <div class="doom-card max-w-4xl mx-auto border-2 border-red-500 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
-                    <h4 class="card-title text-red-600 justify-center text-3xl mb-8">☢️ APOCALYPSE PROTOCOL</h4>
-                    
-                    <div class="input-group max-w-lg mx-auto mb-10">
-                        <label class="input-label text-center text-red-500">Target Guild (Server) ID</label>
-                        <input type="text" id="nuke-guild" class="doom-input text-center text-xl font-black border-red-200 focus:border-red-500 focus:ring-red-500" placeholder="ENTER GUILD ID">
+            
+            <div class="bg-gray-800/40 backdrop-blur rounded-lg p-5 border border-gray-700 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-400 mb-1">Messages Sent</div>
+                        <div class="text-3xl font-bold text-red-500" id="msgCount">-</div>
                     </div>
-
-                    <div class="grid-layout grid-cols-2 mb-10">
-                        <button onclick="executeNuke('channels')" class="doom-btn bg-white text-gray-800 border-gray-300 border-2 hover:bg-gray-50">
-                            1. OBLITERATE CHANNELS
-                        </button>
-                        <button onclick="executeNuke('roles')" class="doom-btn bg-white text-gray-800 border-gray-300 border-2 hover:bg-gray-50">
-                            2. MASS ROLE DEPLOYMENT
-                        </button>
-                        <button onclick="executeNuke('ban')" class="doom-btn bg-white text-gray-800 border-gray-300 border-2 hover:bg-gray-50">
-                            3. BAN ALL MEMBERS
-                        </button>
-                        <button onclick="executeNuke('spam')" class="doom-btn bg-white text-gray-800 border-gray-300 border-2 hover:bg-gray-50">
-                            4. MASS CHANNEL CREATION
-                        </button>
+                    <div class="h-12 w-12 bg-red-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
                     </div>
-
-                    <button onclick="executeTotalAnnihilation()" class="doom-btn danger py-6 text-xl tracking-[5px]">
-                        EXECUTE TOTAL ANNIHILATION
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Token Validator -->
+            <div class="bg-gray-800/30 backdrop-blur rounded-lg p-6 border border-gray-700 glow card-hover">
+                <h2 class="text-xl font-semibold mb-4 text-red-400 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    Token Validator
+                </h2>
+                <textarea id="token" 
+                          class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 mb-3 text-sm input-focus focus:outline-none" 
+                          placeholder="Enter Discord token..." rows="3"></textarea>
+                <button onclick="validateToken()" 
+                        class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 px-6 py-2 rounded-lg font-medium transition-all">
+                    Validate Token
+                </button>
+                <div id="tokenResult" class="mt-4 text-sm"></div>
+            </div>
+            
+            <!-- Kamp Spammer -->
+            <div class="bg-gray-800/30 backdrop-blur rounded-lg p-6 border border-gray-700 glow card-hover">
+                <h2 class="text-xl font-semibold mb-4 text-red-400 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Kamp Spammer
+                </h2>
+                <input type="text" id="kampToken" placeholder="Discord Token" 
+                       class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 mb-3 text-sm input-focus focus:outline-none">
+                <input type="text" id="channelId" placeholder="Channel ID" 
+                       class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 mb-3 text-sm input-focus focus:outline-none">
+                <textarea id="message" placeholder="Message to spam" rows="2"
+                          class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 mb-3 text-sm input-focus focus:outline-none"></textarea>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">Count (max 100)</label>
+                        <input type="number" id="count" value="10" min="1" max="100"
+                               class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-sm input-focus focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">Delay (seconds)</label>
+                        <input type="number" id="delay" value="2" min="1" step="0.5"
+                               class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-sm input-focus focus:outline-none">
+                    </div>
+                </div>
+                <div class="flex space-x-3">
+                    <button onclick="startKamp()" 
+                            class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 px-6 py-2 rounded-lg font-medium transition-all flex-1">
+                        Start Kamp
+                    </button>
+                    <button onclick="stopKamp()" 
+                            class="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg font-medium transition-all">
+                        Stop
                     </button>
                 </div>
+                <div id="kampResult" class="mt-4 text-sm"></div>
             </div>
-
-            <div id="tab-web" class="tab-pane">
-                <div class="doom-card max-w-3xl">
-                    <h4 class="card-title">🔗 Webhook Striker</h4>
-                    <div class="input-group">
-                        <label class="input-label">Webhook URL Connection</label>
-                        <input type="text" id="web-url" class="doom-input mono text-xs" placeholder="https://discord.com/api/webhooks/...">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Payload Content</label>
-                        <textarea id="web-msg" class="doom-input h-32" placeholder="Message content to be sent via webhook..."></textarea>
-                    </div>
-                    <div class="grid-layout grid-cols-2">
-                        <div class="input-group">
-                            <label class="input-label">Attack Count</label>
-                            <input type="number" id="web-count" class="doom-input" value="50">
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">Thread Target (Optional ID)</label>
-                            <input type="text" id="web-thread" class="doom-input" placeholder="Thread ID...">
-                        </div>
-                    </div>
-                    <button onclick="executeWebhookAttack()" class="doom-btn mt-4">FIRE WEBHOOK PAYLOADS</button>
-                </div>
-            </div>
-
-            <div id="tab-thread" class="tab-pane">
-                <div class="doom-card max-w-3xl">
-                    <h4 class="card-title">🧵 Thread Deployment Unit</h4>
-                    <div class="grid-layout grid-cols-2">
-                        <div class="input-group">
-                            <label class="input-label">Parent Channel ID</label>
-                            <input type="text" id="thread-parent" class="doom-input" placeholder="Channel ID...">
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">Generated Thread Title</label>
-                            <input type="text" id="thread-name" class="doom-input" placeholder="e.g., RAIDED BY DOOMHUB">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Initial Thread Payload</label>
-                        <textarea id="thread-msg" class="doom-input h-32" placeholder="The first message sent inside the created thread..."></textarea>
-                    </div>
-                    <button onclick="executeThreadAttack()" class="doom-btn mt-4">DEPLOY THREADS</button>
-                </div>
-            </div>
-
-            <div id="tab-config" class="tab-pane">
-                <div class="doom-card max-w-2xl text-center py-20 opacity-50">
-                    <span class="text-6xl mb-6 block">⚙️</span>
-                    <h2 class="text-3xl font-black">SYSTEM CONFIGURATION</h2>
-                    <p class="text-sm font-bold uppercase mt-4">Module currently locked by Administrator.</p>
-                </div>
-            </div>
-
         </div>
-    </main>
-
+        
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-gray-600 text-sm py-4 border-t border-gray-800">
+            © 2026 DoomHub and Tader - All Rights Reserved
+        </footer>
+    </div>
+    
     <script>
-                // Global State Variables
-        let SYSTEM_TOKEN = "";
-        let OPERATOR_NAME = "";
-        let TOTAL_STRIKES = 0;
-        const ICONS = { dash: '📊', spam: '🚀', nuke: '☢️', web: '🔗', thread: '🧵', config: '⚙️' };
-
-        // 1. Boot Sequence & Authentication
-        function systemBootSequence() {
-            const nameInput = document.getElementById('op-name').value;
-            const tokenInput = document.getElementById('op-token').value;
+        let currentTaskId = null;
+        let statusInterval = null;
+        let totalMessagesSent = 0;
+        
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Update stats
+        async function updateStats() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                document.getElementById('proxyCount').textContent = data.proxies || 0;
+                document.getElementById('taskCount').textContent = data.active_tasks || 0;
+            } catch(e) {
+                console.error('Failed to fetch stats:', e);
+            }
+        }
+        
+        // Token validation
+        async function validateToken() {
+            const token = document.getElementById('token').value.trim();
+            const resultDiv = document.getElementById('tokenResult');
             
-            if(!nameInput || !tokenInput) {
-                alert("CRITICAL ERROR: Operator Credentials Required.");
+            if (!token) {
+                resultDiv.innerHTML = '<div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3 text-yellow-400">⚠ Please enter a token</div>';
                 return;
             }
-
-            OPERATOR_NAME = nameInput;
-            SYSTEM_TOKEN = tokenInput;
             
-            document.getElementById('nav-user').innerText = OPERATOR_NAME + " • ACTIVE";
-            document.getElementById('auth-gate').style.display = 'none';
+            resultDiv.innerHTML = '<div class="flex items-center space-x-2 text-yellow-500"><div class="animate-spin rounded-full h-4 w-4 border-2 border-yellow-500 border-t-transparent"></div><span>Validating...</span></div>';
             
-            writeLog("DOOMHUB V4.0 KERNEL INITIALIZED.", "SUCCESS");
-            writeLog("Operator " + OPERATOR_NAME + " authentication verified.", "INFO");
-            writeLog("Establishing secure connection to proxy matrix...", "WARN");
-            
-            setTimeout(() => writeLog("Connection established. All systems ready.", "SUCCESS"), 1500);
-        }
-
-        // 2. Navigation System
-        function switchModule(moduleId) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            
-            document.getElementById('tab-' + moduleId).classList.add('active');
-            document.getElementById('l-' + moduleId).classList.add('active');
-            
-            const titleText = document.getElementById('l-' + moduleId).querySelector('span:nth-child(2)').innerText;
-            document.getElementById('head-title').innerText = titleText;
-            document.getElementById('header-icon').innerText = ICONS[moduleId];
-            
-            writeLog("Navigated to module: " + titleText.toUpperCase(), "INFO");
-        }
-
-        // 3. Advanced Logging System
-        function writeLog(message, type = "INFO") {
-            const consoleBox = document.getElementById('console');
-            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric" });
-            
-            let colorClass = "log-info";
-            let prefix = "[INFO]";
-            
-            if(type === "SUCCESS") { colorClass = "log-success"; prefix = "[OKAY]"; }
-            if(type === "WARN") { colorClass = "log-warn"; prefix = "[WARN]"; }
-            if(type === "DANGER") { colorClass = "log-danger"; prefix = "[CRIT]"; }
-
-            const logEntry = document.createElement('div');
-            logEntry.className = "log-line mono";
-            logEntry.innerHTML = `<span class="log-time">[${timestamp}]</span> <span class="${colorClass}">${prefix}</span> > ${message}`;
-            
-            consoleBox.appendChild(logEntry);
-            consoleBox.scrollTop = consoleBox.scrollHeight;
-        }
-
-        function updateStats(count) {
-            TOTAL_STRIKES += parseInt(count);
-            document.getElementById('stat-payloads').innerText = TOTAL_STRIKES.toLocaleString();
-        }
-
-        // --- BACKEND API CONNECTORS ---
-
-        // 5. Spam Engine (BACKEND CONNECTED)
-        async function executeSpamAttack() {
-            const data = {
-                token: SYSTEM_TOKEN,
-                channel_id: document.getElementById('spam-target').value,
-                message: document.getElementById('spam-msg').value,
-                count: document.getElementById('spam-count').value,
-                delay: document.getElementById('spam-delay').value
-            };
-
-            if(!data.channel_id || !data.message) return writeLog("Spam targeting failed: Missing parameters.", "DANGER");
-
-            writeLog(`Initiating mass spam on channel: ${data.channel_id}`, "WARN");
-
             try {
-                const resp = await fetch('/api/spam', {
+                const response = await fetch('/api/validate', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({token})
                 });
-                const res = await resp.json();
-                writeLog(`[SYSTEM] ${res.msg}`, "SUCCESS");
-                updateStats(data.count);
-            } catch (e) { writeLog("Backend Connection Failed!", "DANGER"); }
+                const data = await response.json();
+                
+                if (data.valid) {
+                    resultDiv.innerHTML = `<div class="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                        <div class="flex items-center text-green-400 mb-1">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Valid Token
+                        </div>
+                        <span class="text-sm text-gray-400">${data.username}</span>
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="bg-red-900/30 border border-red-700 rounded-lg p-3">
+                        <div class="flex items-center text-red-400">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            ${data.message}
+                        </div>
+                    </div>`;
+                }
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="bg-red-900/30 border border-red-700 rounded-lg p-3 text-red-400">✗ Connection Error</div>';
+            }
         }
-
-        // 7. Webhook Striker (BACKEND CONNECTED)
-        async function executeWebhookAttack() {
-            const data = {
-                url: document.getElementById('web-url').value,
-                message: document.getElementById('web-msg').value,
-                count: document.getElementById('web-count').value
-            };
-
-            if(!data.url || !data.message) return writeLog("Webhook firing failed: Missing data.", "DANGER");
-
-            writeLog(`Locking onto webhook URL...`, "INFO");
-
+        
+        // Start kamp
+        async function startKamp() {
+            const token = document.getElementById('kampToken').value.trim();
+            const channelId = document.getElementById('channelId').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const count = parseInt(document.getElementById('count').value);
+            const delay = parseFloat(document.getElementById('delay').value);
+            
+            if (!token || !channelId || !message) {
+                document.getElementById('kampResult').innerHTML = '<div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3 text-yellow-400">⚠ All fields are required</div>';
+                return;
+            }
+            
+            const resultDiv = document.getElementById('kampResult');
+            resultDiv.innerHTML = '<div class="flex items-center space-x-2 text-yellow-500"><div class="animate-spin rounded-full h-4 w-4 border-2 border-yellow-500 border-t-transparent"></div><span>Starting Kamp...</span></div>';
+            
             try {
-                const resp = await fetch('/api/webhook', {
+                const response = await fetch('/api/kamp/start', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({token, channelId, message, count, delay})
                 });
-                const res = await resp.json();
-                writeLog(`[SYSTEM] ${res.msg}`, "SUCCESS");
-                updateStats(data.count);
-            } catch (e) { writeLog("Backend Connection Failed!", "DANGER"); }
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentTaskId = data.taskId;
+                    resultDiv.innerHTML = `<div class="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                        <div class="flex items-center text-green-400">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Kamp Started Successfully
+                        </div>
+                    </div>`;
+                    if (statusInterval) clearInterval(statusInterval);
+                    statusInterval = setInterval(pollKampStatus, 1000);
+                    updateStats();
+                } else {
+                    resultDiv.innerHTML = `<div class="bg-red-900/30 border border-red-700 rounded-lg p-3 text-red-400">✗ ${data.message}</div>`;
+                }
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="bg-red-900/30 border border-red-700 rounded-lg p-3 text-red-400">✗ Error starting kamp</div>';
+            }
         }
-
-        // 8. Thread Deployer (BACKEND CONNECTED)
-        async function executeThreadAttack() {
-            const data = {
-                token: SYSTEM_TOKEN,
-                channel_id: document.getElementById('thread-parent').value,
-                thread_name: document.getElementById('thread-name').value,
-                message: document.getElementById('thread-msg').value,
-                count: 10
-            };
-
-            if(!data.channel_id || !data.thread_name) return writeLog("Thread deployment failed.", "DANGER");
-
-            writeLog(`Deploying threads in: ${data.channel_id}`, "WARN");
-
+        
+        // Stop kamp
+        async function stopKamp() {
+            if (!currentTaskId) return;
+            
             try {
-                const resp = await fetch('/api/thread', {
+                await fetch('/api/kamp/stop', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({taskId: currentTaskId})
                 });
-                const res = await resp.json();
-                writeLog(`[SYSTEM] ${res.msg}`, "SUCCESS");
-                updateStats(10);
-            } catch (e) { writeLog("Backend Connection Failed!", "DANGER"); }
+                document.getElementById('kampResult').innerHTML = '<div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3 text-yellow-400">⏸ Kamp Stopped</div>';
+                if (statusInterval) {
+                    clearInterval(statusInterval);
+                    statusInterval = null;
+                }
+                currentTaskId = null;
+                updateStats();
+            } catch (e) {
+                console.error('Failed to stop kamp:', e);
+            }
         }
-
-        // Fix the Nuke function
-function executeNuke(type) {
-    writeLog(`Executing partial nuke [${type.toUpperCase()}]`, "DANGER");
-}
-
-function executeTotalAnnihilation() {
-    const guild = document.getElementById('nuke-guild').value;
-    if(!guild) return writeLog("Target Guild ID required for Annihilation.", "DANGER");
-    writeLog("CRITICAL: TOTAL ANNIHILATION SEQUENCE STARTED", "DANGER");
-           }
-    </script>
-</body>
-</html>
+        
+        // Poll kamp status
+        async function pollKampStatus() {
+            if (!currentTaskId) {
+                if (statusInterval) clearInterval(statusInterval);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/kamp/status/${currentTaskId}`);
+                const data = await response.json();
+                
+                if (data.running) {
+                    const percent = Math.round((data.sent / data.total) * 100);
+                    document.getElementById('kampResult').innerHTML = `<div class="bg-blue-900/30 border border-blue-700 rounded-lg p-3">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-blue-400">📊 Progress: ${data.sent}/${data.total}</span>
+                            <span class="text-blue-400 font-bold">${percent}%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full progress-bar" style="width: ${percent}%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-xs text-gray-400">
+                            <span>Sent: ${data.sent}</span>
+                            <span>Failed: ${data.failed}</span>
+                        </div>
+                    </div>`;
+                    document.getElementById('msgCount').textContent = data.sent;
+                    totalMessagesSent = data.sent;
+                    updateStats();
+                } else {
