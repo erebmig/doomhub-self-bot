@@ -3,271 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DOOMHUB | TERMINAL</title>
+    <title>DOOMHUB | SELF BOT v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --hub-blue: #3b82f6;
-            --hub-bg: #ffffff;
-            --hub-panel: #f9fafb;
-            --hub-text: #1f2937;
-            --hub-border: #e5e7eb;
+            --accent: #3b82f6;
+            --bg-soft: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
         }
 
         body { 
-            background: var(--hub-bg); 
-            color: var(--hub-text); 
-            font-family: 'Rajdhani', sans-serif; 
-            height: 100vh;
+            font-family: 'Inter', sans-serif; 
+            background: #ffffff; 
+            color: var(--text-main); 
+            height: 100vh; 
             overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
+            display: flex;
         }
 
-        .clean-title { font-family: 'Orbitron', sans-serif; letter-spacing: -1px; }
-
-        /* Tab Animasyonları */
-        .tab-content { display: none; opacity: 0; transform: translateY(8px); transition: all 0.25s ease-out; }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
-
-        .nav-btn { color: #9ca3af; transition: 0.2s; position: relative; }
-        .nav-btn.active { color: var(--hub-blue); }
-        .nav-btn.active::after {
-            content: ''; position: absolute; top: 0; left: 25%; right: 25%; height: 3px;
-            background: var(--hub-blue); border-radius: 0 0 4px 4px;
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            z-index: 50;
         }
 
-        .hub-input { background: #fff !important; border: 1px solid var(--hub-border) !important; transition: 0.2s; }
-        .hub-input:focus { border-color: var(--hub-blue) !important; outline: none; box-shadow: 0 0 12px rgba(59, 130, 246, 0.1); }
-        
-        .hub-btn { background: var(--hub-blue); color: white; font-weight: bold; transition: 0.1s; border: 1px solid #2563eb; }
-        .hub-btn:active { transform: scale(0.96); }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            margin: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
 
-        .terminal-bg { background: #0f172a; border: 1px solid #1e293b; }
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .nav-link:hover { background: var(--bg-soft); color: var(--text-main); }
+        .nav-link.active { background: #eff6ff; color: var(--accent); }
+
+        /* Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-soft);
+            overflow-y: auto;
+        }
+
+        /* Glass Cards */
+        .doom-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Custom Inputs */
+        .doom-input {
+            width: 100%;
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: 0.2s;
+            outline: none;
+        }
+
+        .doom-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .doom-btn {
+            background: var(--accent);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+            transition: 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        .doom-btn:active { transform: scale(0.97); }
+        .doom-btn.danger { background: #ef4444; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2); }
+
+        /* Terminal Style Log */
+        .terminal-container {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #1e293b;
+        }
+
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; animation: slideUp 0.4s ease-out; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Login Overlay */
+        #auth-gate {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
-<body class="flex flex-col">
+<body>
 
-    <div id="setup-screen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-8">
-        <div class="text-center mb-10">
-            <h1 class="clean-title text-5xl text-gray-900 tracking-tighter">DOOMHUB</h1>
-            <p class="text-[10px] text-gray-400 font-bold tracking-[0.4em] mt-1">AUTHORIZED ACCESS ONLY</p>
-        </div>
-
-        <div class="w-full max-w-sm p-8 rounded-3xl border border-gray-100 shadow-2xl shadow-blue-50">
-            <div class="mb-4">
-                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Operator Name</label>
-                <input type="text" id="display-name" placeholder="Enter Name..." 
-                    class="hub-input w-full p-4 rounded-2xl mt-1 text-sm font-bold tracking-wide">
-            </div>
+    <div id="auth-gate">
+        <div class="w-full max-w-md p-10 text-center">
+            <h1 class="text-5xl font-black tracking-tighter mb-2 italic">DOOMHUB</h1>
+            <p class="text-[11px] font-bold text-gray-400 tracking-[0.5em] mb-12 uppercase">Mobile Infrastructure v4.0</p>
             
-            <div class="mb-6">
-                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">System Token</label>
-                <input type="password" id="token" placeholder="Discord Token" 
-                    class="hub-input w-full p-4 rounded-2xl mt-1 text-sm font-mono tracking-widest">
+            <div class="space-y-4">
+                <input type="text" id="op-name" placeholder="NAME" class="doom-input text-center font-bold border-2">
+                <input type="password" id="op-token" placeholder="ACCOUNT TOKEN" class="doom-input text-center border-2">
+                <button onclick="unlock()" class="doom-btn w-full mt-6 text-lg">LOGIN</button>
             </div>
-
-            <button onclick="setupSystem()" id="login-btn" class="hub-btn w-full py-5 rounded-2xl shadow-lg shadow-blue-100">
-                INITIALIZE CORE
-            </button>
+            <p class="mt-8 text-[10px] text-gray-300 font-medium">ENCRYPTED END-TO-END CONNECTION</p>
         </div>
     </div>
 
-    <div id="main-app" class="hidden flex flex-col h-screen">
-        
-        <header class="p-5 sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100 flex justify-between items-center">
-            <div>
-                <h1 class="clean-title text-2xl text-gray-950">DOOMHUB</h1>
-                <p class="text-[9px] text-green-600 font-bold uppercase">Proxy: Connected</p>
+    <aside class="sidebar">
+        <div class="p-8 pb-10">
+            <h2 class="text-3xl font-black tracking-tighter text-gray-900">DOOMHUB</h2>
+            <div class="flex items-center gap-2 mt-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span id="nav-user" class="text-[10px] font-black text-gray-400 uppercase tracking-widest">yoyoyoyo • ONLINE</span>
             </div>
-            <div id="user-avatar" class="w-10 h-10 rounded-full bg-blue-600 border border-blue-400 flex items-center justify-center font-bold text-white shadow-lg uppercase">
-                ??
+        </div>
+
+        <nav class="flex-1">
+            <div class="px-6 mb-4 text-[10px] font-black text-gray-300 uppercase tracking-[2px]">Core Systems</div>
+            <div onclick="switchTab('dash')" id="l-dash" class="nav-link active"><span>📊</span> Dashboard</div>
+            <div onclick="switchTab('acc')" id="l-acc" class="nav-link"><span>👤</span> Account Manager</div>
+            <div onclick="switchTab('friend')" id="l-friend" class="nav-link"><span>👥</span> Friends & DMs</div>
+            
+            <div class="px-6 mt-8 mb-4 text-[10px] font-black text-gray-300 uppercase tracking-[2px]">Offensive Units</div>
+            <div onclick="switchTab('spam')" id="l-spam" class="nav-link"><span>🚀</span> Spam Engine</div>
+            <div onclick="switchTab('nuke')" id="l-nuke" class="nav-link"><span>☢️</span> Server Nuker</div>
+            <div onclick="switchTab('web')" id="l-web" class="nav-link"><span>🔗</span> Webhook Striker</div>
+            <div onclick="switchTab('thread')" id="l-thread" class="nav-link"><span>🧵</span> Thread Spammer</div>
+        </nav>
+
+        <div class="p-6">
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <p class="text-[9px] font-bold text-gray-400 uppercase">System Integrity</p>
+                <p class="text-xs font-bold text-green-600 mt-1">SECURE / PROXY ACTIVE</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="h-20 bg-white border-b border-gray-100 px-10 flex items-center justify-between sticky top-0 z-40">
+            <h3 id="head-title" class="text-lg font-bold text-gray-800 uppercase tracking-tight">System Overview</h3>
+            <div class="flex gap-3">
+                <button class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-100 transition">+ ADD ACCOUNT</button>
+                <div class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold text-xs">YY</div>
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-5 pb-32 bg-[#fafafa]">
-
-            <div id="tab-home" class="tab-content active space-y-5">
-                <div class="p-6 rounded-2xl border-l-[6px] border-blue-500 bg-white shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Welcome back,</p>
-                    <h2 id="welcome-text" class="text-2xl font-bold text-gray-900 uppercase">OPERATOR</h2>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm text-center">
-                        <span id="stat-tasks" class="text-3xl font-bold text-blue-600">0</span>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">Active Tasks</p>
+        <div class="p-10 pb-32">
+            
+            <div id="tab-dash" class="tab-pane active space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="doom-card border-b-4 border-b-blue-500">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Payloads</p>
+                        <h4 id="stat-payloads" class="text-4xl font-black mt-2">0</h4>
                     </div>
-                    <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm text-center">
-                        <span id="stat-reqs" class="text-3xl font-bold text-blue-600">0</span>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">Packets Sent</p>
+                    <div class="doom-card border-b-4 border-b-purple-500">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Threads</p>
+                        <h4 class="text-4xl font-black mt-2">0</h4>
                     </div>
-                </div>
-
-                <div class="p-5 rounded-2xl h-56 terminal-bg flex flex-col shadow-xl">
-                    <div class="flex justify-between border-b border-gray-800 pb-2 mb-2">
-                        <span class="text-[10px] text-gray-500 font-mono">LIVE_TERMINAL</span>
-                        <span class="text-[9px] text-blue-400 font-mono italic">SECURE_CHANNEL</span>
+                    <div class="doom-card border-b-4 border-b-green-500">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Proxy Health</p>
+                        <h4 class="text-4xl font-black mt-2">100%</h4>
                     </div>
-                    <div id="console-logs" class="flex-1 overflow-y-auto font-mono text-[11px] text-gray-300 space-y-1">
-                        <p class="text-blue-400">> System Ready.</p>
+                    <div class="doom-card border-b-4 border-b-orange-500">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Server Latency</p>
+                        <h4 class="text-4xl font-black mt-2">24ms</h4>
                     </div>
                 </div>
-            </div>
 
-            <div id="tab-spammer" class="tab-content space-y-5">
-                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <span class="text-blue-500">✉️</span> Mass Messenger
-                </h2>
-                <div class="p-6 rounded-3xl bg-white border border-gray-100 shadow-sm space-y-5">
-                    <div>
-                        <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">Channel ID</label>
-                        <input type="text" id="spam-id" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm" placeholder="Target ID">
+                <div class="doom-card space-y-4 bg-white/50">
+                    <div class="flex justify-between items-center">
+                        <h5 class="text-sm font-black uppercase tracking-widest text-gray-400 italic">Global Console Output</h5>
+                        <button onclick="document.getElementById('console').innerHTML=''" class="text-[10px] font-bold text-red-400 underline uppercase">Clear Log</button>
                     </div>
-                    <div>
-                        <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">Message</label>
-                        <textarea id="spam-msg" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm h-32 resize-none" placeholder="Payload..."></textarea>
+                    <div id="console" class="terminal-container">
+                        <p class="text-blue-400">> [INIT] DOOMHUB MOBILE KERNEL v4.0.0-STABLE READY.</p>
+                        <p class="text-blue-400">> [INIT] CLOUDFLARE PROXY HANDSHAKE: SUCCESSFUL.</p>
+                        <p class="text-green-400">> [AUTH] ENCRYPTED SESSION OPENED FOR OPERATOR: yoyoyoyo.</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="number" id="spam-cnt" class="hub-input p-4 rounded-xl text-center text-sm font-bold" value="5">
-                        <input type="number" id="spam-dly" class="hub-input p-4 rounded-xl text-center text-sm font-bold" value="500">
-                    </div>
-                    <button onclick="dispatchSpam()" class="hub-btn w-full py-5 rounded-2xl text-sm shadow-blue-50">DISPATCH ATTACK</button>
                 </div>
             </div>
 
-            <div id="tab-manage" class="tab-content space-y-5">
-                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <span class="text-gray-500">⚙️</span> Server Management
-                </h2>
-                <div class="p-6 rounded-3xl bg-white border border-gray-100 shadow-sm space-y-4">
-                    <input type="text" class="hub-input w-full p-4 rounded-xl text-sm" placeholder="Guild (Server) ID">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-                            <span class="text-sm font-bold text-gray-600">Delete Channels</span>
-                            <input type="checkbox" class="w-5 h-5 accent-blue-600">
+            <div id="tab-spam" class="tab-pane space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="doom-card">
+                            <h4 class="text-xl font-black mb-6 flex items-center gap-2">🚀 MASS SPAM CONFIGURATION</h4>
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="text-[11px] font-black text-gray-400 uppercase ml-1">Channel ID (Target)</label>
+                                    <input type="text" id="spam-target" class="doom-input mt-1 shadow-sm" placeholder="Ex: 123456789012345678">
+                                </div>
+                                <div>
+                                    <label class="text-[11px] font-black text-gray-400 uppercase ml-1">Payload Content</label>
+                                    <textarea id="spam-msg" class="doom-input mt-1 h-44 resize-none" placeholder="Enter message payload here..."></textarea>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[11px] font-black text-gray-400 uppercase ml-1">Message Count</label>
+                                        <input type="number" id="spam-count" class="doom-input mt-1" value="10">
+                                    </div>
+                                    <div>
+                                        <label class="text-[11px] font-black text-gray-400 uppercase ml-1">Delay (Milliseconds)</label>
+                                        <input type="number" id="spam-delay" class="doom-input mt-1" value="500">
+                                    </div>
+                                </div>
+                                <button onclick="runAttack()" class="doom-btn w-full py-5 text-base mt-4 shadow-blue-500/40">EXECUTE DISPATCH SEQUENCE</button>
+                            </div>
                         </div>
                     </div>
-                    <button onclick="logAction('Sequence Initiated.')" class="w-full bg-gray-950 text-white font-bold py-5 rounded-2xl text-sm uppercase tracking-widest">Execute</button>
-                </div>
-            </div>
-
-            <div id="tab-settings" class="tab-content space-y-5">
-                <div class="p-6 rounded-3xl bg-white border border-gray-100 shadow-sm space-y-4">
-                    <div class="flex justify-between border-b border-gray-50 pb-3">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase">Version</span>
-                        <span class="text-xs font-mono text-blue-600">2.4.0</span>
+                    <div class="space-y-6">
+                        <div class="doom-card bg-gray-900 text-white">
+                            <h4 class="font-bold text-sm mb-4 border-b border-gray-800 pb-2">PRESETS</h4>
+                            <div class="space-y-2">
+                                <button onclick="document.getElementById('spam-msg').value='@everyone RAIDER BY DOOMHUB'" class="w-full text-left p-3 rounded-lg bg-gray-800 text-[11px] font-bold hover:bg-gray-700 transition">Everyone Ghost Spam</button>
+                                <button onclick="document.getElementById('spam-msg').value='JOIN DOOMHUB FOR FREE TOOLS'" class="w-full text-left p-3 rounded-lg bg-gray-800 text-[11px] font-bold hover:bg-gray-700 transition">Invite Link Spam</button>
+                                <button class="w-full text-left p-3 rounded-lg bg-gray-800 text-[11px] font-bold hover:bg-gray-700 transition italic">+ Save New Preset</button>
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="location.reload()" class="w-full py-4 text-red-500 font-bold text-xs uppercase tracking-widest mt-4">Log Out</button>
-                </div>
-
-                <div class="text-center pt-10">
-                    <p class="text-[10px] text-gray-400 uppercase tracking-[3px] mb-1">DOOMHUB PROJECT</p>
-                    <p class="text-[9px] text-gray-300 font-medium">© 2024-2026 Developed by Tader. All rights reserved.</p>
                 </div>
             </div>
 
-        </main>
+            <div id="tab-nuke" class="tab-pane space-y-6">
+                <div class="doom-card max-w-4xl mx-auto border-2 border-red-100">
+                    <h4 class="text-2xl font-black text-red-600 mb-8 flex items-center gap-3">☢️ SERVER DESTRUCTION UNIT</h4>
+                    <div class="space-y-6">
+                        <input type="text" id="nuke-guild" class="doom-input text-lg font-bold border-red-200" placeholder="GUILD (SERVER) ID">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-5 border border-gray-100 rounded-2xl flex justify-between items-center bg-gray-50">
+                                <div>
+                                    <p class="font-bold text-gray-700">Purge Channels</p>
+                                    <p class="text-[10px] text-gray-400">Deletes every channel in the server</p>
+                                </div>
+                                <input type="checkbox" class="w-6 h-6 accent-red-600">
+                            </div>
+                            <div class="p-5 border border-gray-100 rounded-2xl flex justify-between items-center bg-gray-50">
+                                <div>
+                                    <p class="font-bold text-gray-700">Mass Create Roles</p>
+                                    <p class="text-[10px] text-gray-400">Spams 250+ roles with custom name</p>
+                                </div>
+                                <input type="checkbox" class="w-6 h-6 accent-red-600">
+                            </div>
+                            <div class="p-5 border border-gray-100 rounded-2xl flex justify-between items-center bg-gray-50">
+                                <div>
+                                    <p class="font-bold text-gray-700">Server Renamer</p>
+                                    <p class="text-[10px] text-gray-400">Changes server name/icon</p>
+                                </div>
+                                <input type="checkbox" class="w-6 h-6 accent-red-600">
+                            </div>
+                            <div class="p-5 border border-gray-100 rounded-2xl flex justify-between items-center bg-gray-50">
+                                <div>
+                                    <p class="font-bold text-gray-700">Kick/Ban All</p>
+                                    <p class="text-[10px] text-gray-400">Clears the entire member list</p>
+                                </div>
+                                <input type="checkbox" class="w-6 h-6 accent-red-600">
+                            </div>
+                        </div>
+                        
+                        <button onclick="log('Nuke sequence authorization required.', 'DANGER')" class="doom-btn danger w-full py-6 text-lg tracking-[5px]">INITIALIZE APOCALYPSE</button>
+                    </div>
+                </div>
+            </div>
 
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around p-3 pb-8 z-50">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-btn active flex-1 flex flex-col items-center">
-                <span class="text-2xl">🏠</span>
-                <span class="text-[9px] font-bold uppercase mt-1">Home</span>
-            </button>
-            <button onclick="switchTab('spammer')" id="nav-spammer" class="nav-btn flex-1 flex flex-col items-center">
-                <span class="text-2xl">✉️</span>
-                <span class="text-[9px] font-bold uppercase mt-1">Spam</span>
-            </button>
-            <button onclick="switchTab('manage')" id="nav-manage" class="nav-btn flex-1 flex flex-col items-center">
-                <span class="text-2xl">⚙️</span>
-                <span class="text-[9px] font-bold uppercase mt-1">Manage</span>
-            </button>
-            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex-1 flex flex-col items-center">
-                <span class="text-2xl">🔧</span>
-                <span class="text-[9px] font-bold uppercase mt-1">Set</span>
-            </button>
-        </nav>
-    </div>
+            <div id="tab-acc" class="tab-pane">
+                <div class="doom-card text-center py-20">
+                    <h2 class="text-4xl font-black opacity-10">ACCOUNT MANAGER READY</h2>
+                </div>
+            </div>
+            <div id="tab-friend" class="tab-pane">
+                <div class="doom-card text-center py-20">
+                    <h2 class="text-4xl font-black opacity-10">FRIENDS & DM MODULE READY</h2>
+                </div>
+            </div>
+            <div id="tab-web" class="tab-pane">
+                <div class="doom-card text-center py-20">
+                    <h2 class="text-4xl font-black opacity-10">WEBHOOK STRIKER READY</h2>
+                </div>
+            </div>
+            <div id="tab-thread" class="tab-pane">
+                <div class="doom-card text-center py-20">
+                    <h2 class="text-4xl font-black opacity-10">THREAD SPAMMER READY</h2>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-auto border-t border-gray-100 p-8 bg-white/50 backdrop-blur-sm text-center">
+            <p class="text-[10px] font-black text-gray-300 tracking-[8px] uppercase">© 2026 Developed by Tader • DoomHub Project v4.0</p>
+        </footer>
+    </main>
 
     <script>
         let _TOKEN = "";
         let _NAME = "";
-        let _TASKS = 0;
-        let _REQS = 0;
+        let _PAYLOADS = 0;
 
-        window.switchTab = (id) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${id}`).classList.add('active');
-            document.getElementById(`nav-${id}`).classList.add('active');
-            logAction(`Switched to ${id.toUpperCase()}`);
-        };
-
-        window.logAction = (msg) => {
-            const box = document.getElementById('console-logs');
-            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            box.innerHTML += `<p><span class="text-gray-500">[${time}]</span> <span class="text-blue-500">></span> ${msg}</p>`;
-            box.scrollTop = box.scrollHeight;
-        };
-
-        window.setupSystem = async () => {
-            const nameInput = document.getElementById('display-name');
-            const tokenInput = document.getElementById('token');
-            const btn = document.getElementById('login-btn');
+        // Core App Functions
+        function unlock() {
+            const nameInput = document.getElementById('op-name');
+            const tokenInput = document.getElementById('op-token');
             
-            if(!nameInput.value || !tokenInput.value) {
-                alert("Please fill all fields!");
-                return;
-            }
+            if(!nameInput.value || !tokenInput.value) return alert("OPERATOR CREDENTIALS REQUIRED");
 
             _NAME = nameInput.value;
             _TOKEN = tokenInput.value;
-            btn.innerText = "CONNECTING...";
-            btn.disabled = true;
+            
+            document.getElementById('nav-user').innerText = `${_NAME} • ONLINE`;
+            document.getElementById('auth-gate').style.display = 'none';
+            log(`Session established for Operator: ${_NAME}`, "AUTH");
+        }
 
-            try {
-                const res = await fetch('/api/setup', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({token: _TOKEN})
-                });
-                const data = await res.json();
-                
-                if(data.status === 'success') {
-                    // İsim Bilgilerini UI'a Aktar
-                    document.getElementById('welcome-text').innerText = _NAME;
-                    document.getElementById('user-avatar').innerText = _NAME.substring(0, 2);
-                    
-                    document.getElementById('setup-screen').classList.add('hidden');
-                    document.getElementById('main-app').classList.remove('hidden');
-                    switchTab('home');
-                    logAction(`Welcome, operator ${_NAME}. Session verified.`);
-                } else {
-                    alert("Invalid Token!");
-                    btn.disabled = false;
-                    btn.innerText = "INITIALIZE CORE";
-                }
-            } catch (e) {
-                alert("Connection Failed!");
-                btn.disabled = false;
-                btn.innerText = "INITIALIZE CORE";
-            }
-        };
+        function switchTab(id) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById('tab-' + id).classList.add('active');
+            document.getElementById('l-' + id).classList.add('active');
+            document.getElementById('head-title').innerText = id.toUpperCase() + " CONTROL PANEL";
+            
+            log(`Mapsd to module: ${id.toUpperCase()}`);
+        }
 
-        window.dispatchSpam = async () => {
-            const id = document.getElementById('spam-id').value;
+        function log(msg, type = "INFO") {
+            const box = document.getElementById('console');
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            let color = "text-gray-500";
+            if(type === "AUTH") color = "text-green-400";
+            if(type === "DANGER") color = "text-red-500";
+            if(type === "SUCCESS") color = "text-blue-400";
+
+            box.innerHTML += `<p class="${color}">> [${time}] [${type}] ${msg}</p>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function runAttack() {
+            const target = document.getElementById('spam-target').value;
             const msg = document.getElementById('spam-msg').value;
-            const count = document.getElementById('spam-cnt').value;
-            const delay = document.getElementById('spam-dly').value;
+            const count = document.getElementById('spam-count').value;
+            const delay = document.getElementById('spam-delay').value;
 
-            if(!id || !msg) return alert("Missing fields!");
+            if(!target || !msg) return log("Target ID or Message payload missing.", "DANGER");
 
-            logAction(`Task: Send ${count} payloads to ${id}`);
-            _TASKS++;
-            document.getElementById('stat-tasks').innerText = _TASKS;
+            log(`Dispatching sequence of ${count} messages to ${target}...`, "SUCCESS");
 
             try {
                 const res = await fetch('/api/spam', {
@@ -275,20 +395,24 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         token: _TOKEN,
-                        channel_id: id,
+                        channel_id: target,
                         message: msg,
                         count: count,
                         delay: delay
                     })
                 });
-                const data = await res.json();
-                if(data.status === 'completed') {
-                    logAction("Strike Successful.");
-                    _REQS += parseInt(count);
-                    document.getElementById('stat-reqs').innerText = _REQS;
+                
+                if(res.ok) {
+                    log("Dispatch successful. All packets acknowledged.", "SUCCESS");
+                    _PAYLOADS += parseInt(count);
+                    document.getElementById('stat-payloads').innerText = _PAYLOADS;
+                } else {
+                    log("Transmission interrupted by Discord API.", "DANGER");
                 }
-            } catch (e) { logAction("Critical Error: Connection lost."); }
-        };
+            } catch (e) {
+                log("Fatal: Connection to Proxy API refused.", "DANGER");
+            }
+        }
     </script>
 </body>
 </html>
