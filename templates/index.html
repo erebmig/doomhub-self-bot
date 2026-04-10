@@ -3,335 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DOOMHUB | MOBILE TERMINAL</title>
+    <title>DOOMHUB | TERMINAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --hub-blue: #3b82f6; 
+            --hub-blue: #3b82f6;
             --hub-bg: #ffffff;
             --hub-panel: #f9fafb;
             --hub-text: #1f2937;
             --hub-border: #e5e7eb;
         }
+
         body { 
             background: var(--hub-bg); 
             color: var(--hub-text); 
             font-family: 'Rajdhani', sans-serif; 
-            overflow: hidden; /* Prevents body bounce on mobile */
             height: 100vh;
+            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
-        
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--hub-bg); }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px;}
 
         .clean-title { font-family: 'Orbitron', sans-serif; letter-spacing: -1px; }
-        
-        /* Tab Transitions */
-        .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+
+        /* Tab Animasyonları */
+        .tab-content { display: none; opacity: 0; transform: translateY(8px); transition: all 0.25s ease-out; }
         .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
-        
-        .nav-btn { color: #9ca3af; transition: all 0.2s; position: relative; }
+
+        .nav-btn { color: #9ca3af; transition: 0.2s; position: relative; }
         .nav-btn.active { color: var(--hub-blue); }
-        .nav-btn.active::after { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 3px; background: var(--hub-blue); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .nav-btn.active::after {
+            content: ''; position: absolute; top: 0; left: 25%; right: 25%; height: 3px;
+            background: var(--hub-blue); border-radius: 0 0 4px 4px;
+        }
+
+        .hub-input { background: #fff !important; border: 1px solid var(--hub-border) !important; transition: 0.2s; }
+        .hub-input:focus { border-color: var(--hub-blue) !important; outline: none; box-shadow: 0 0 12px rgba(59, 130, 246, 0.1); }
         
-        .hub-input { background: #ffffff !important; border: 1px solid var(--hub-border) !important; color: var(--hub-text) !important; }
-        .hub-input:focus { outline: none; border-color: var(--hub-blue) !important; box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); }
-        
-        .hub-btn { background: var(--hub-blue); color: white; border: 1px solid #2563eb; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; transition: 0.1s; }
+        .hub-btn { background: var(--hub-blue); color: white; font-weight: bold; transition: 0.1s; border: 1px solid #2563eb; }
         .hub-btn:active { transform: scale(0.96); }
-        
-        .panel { background: var(--hub-panel); border: 1px solid var(--hub-border); }
-        
-        /* Terminal Styling */
-        .terminal-bg { background: #0a0a0b; }
+
+        .terminal-bg { background: #0f172a; border: 1px solid #1e293b; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
     </style>
 </head>
 <body class="flex flex-col">
 
-    <div id="setup-screen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6">
-        <div class="text-center mb-12">
-            <h1 class="clean-title text-6xl text-gray-950 tracking-tighter">DOOMHUB</h1>
-            <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] mt-2 font-bold">Encrypted Deployment</p>
+    <div id="setup-screen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-8">
+        <div class="text-center mb-10">
+            <h1 class="clean-title text-5xl text-gray-900 tracking-tighter">DOOMHUB</h1>
+            <p class="text-[10px] text-gray-400 font-bold tracking-[0.4em] mt-1">AUTHORIZED ACCESS ONLY</p>
         </div>
 
-        <div class="panel w-full max-w-sm p-8 rounded-2xl shadow-2xl border border-gray-100">
-            <div class="mb-6 flex items-center justify-between border-b border-gray-100 pb-4">
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Master Authorization</span>
-                <span class="w-3 h-3 bg-green-500 rounded-full animate-ping"></span>
+        <div class="w-full max-w-sm p-8 rounded-3xl border border-gray-100 shadow-2xl shadow-blue-50">
+            <div class="mb-4">
+                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Operator Name</label>
+                <input type="text" id="display-name" placeholder="Enter Name..." 
+                    class="hub-input w-full p-4 rounded-2xl mt-1 text-sm font-bold tracking-wide">
             </div>
-            <input type="password" id="token" placeholder="ENTER DISCORD TOKEN" 
-                class="hub-input w-full p-5 rounded-xl mb-5 text-center tracking-widest text-sm shadow-inner font-mono">
-            <button onclick="setupSystem()" id="login-btn" class="hub-btn w-full py-5 rounded-xl shadow-lg shadow-blue-100 text-sm">
-                Initialize System
+            
+            <div class="mb-6">
+                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">System Token</label>
+                <input type="password" id="token" placeholder="Discord Token" 
+                    class="hub-input w-full p-4 rounded-2xl mt-1 text-sm font-mono tracking-widest">
+            </div>
+
+            <button onclick="setupSystem()" id="login-btn" class="hub-btn w-full py-5 rounded-2xl shadow-lg shadow-blue-100">
+                INITIALIZE CORE
             </button>
         </div>
     </div>
 
     <div id="main-app" class="hidden flex flex-col h-screen">
         
-        <header class="panel p-5 sticky top-0 z-50 flex justify-between items-center bg-white/90 backdrop-blur-md">
-            <h1 class="clean-title text-2xl text-gray-900">DOOMHUB</h1>
-            <div class="flex items-center gap-3">
-                <div class="flex flex-col items-end">
-                    <span class="text-[9px] text-green-600 font-bold uppercase italic">Proxy: long-sound-d421</span>
-                    <span class="text-[8px] text-gray-400 font-mono">Status: Secure</span>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-600 shadow-inner">AD</div>
+        <header class="p-5 sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100 flex justify-between items-center">
+            <div>
+                <h1 class="clean-title text-2xl text-gray-950">DOOMHUB</h1>
+                <p class="text-[9px] text-green-600 font-bold uppercase">Proxy: Connected</p>
+            </div>
+            <div id="user-avatar" class="w-10 h-10 rounded-full bg-blue-600 border border-blue-400 flex items-center justify-center font-bold text-white shadow-lg uppercase">
+                ??
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-5 pb-32 bg-gray-50">
+        <main class="flex-1 overflow-y-auto p-5 pb-32 bg-[#fafafa]">
 
             <div id="tab-home" class="tab-content active space-y-5">
-                <div class="panel p-6 rounded-2xl flex justify-between items-center border-l-[6px] border-l-blue-600 bg-white shadow-sm">
-                    <div>
-                        <p class="text-[11px] text-gray-400 uppercase font-bold tracking-widest">Mainframe Status</p>
-                        <p class="font-bold text-2xl text-gray-900">SYSTEMS READY</p>
-                    </div>
-                    <span class="text-4xl">⚡</span>
+                <div class="p-6 rounded-2xl border-l-[6px] border-blue-500 bg-white shadow-sm border border-gray-100">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Welcome back,</p>
+                    <h2 id="welcome-text" class="text-2xl font-bold text-gray-900 uppercase">OPERATOR</h2>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="panel p-6 rounded-2xl text-center bg-white shadow-sm">
-                        <p id="stat-tasks" class="text-3xl font-bold text-blue-600">0</p>
-                        <p class="text-[10px] text-gray-500 uppercase font-bold mt-2">Active Tasks</p>
+                    <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm text-center">
+                        <span id="stat-tasks" class="text-3xl font-bold text-blue-600">0</span>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">Active Tasks</p>
                     </div>
-                    <div class="panel p-6 rounded-2xl text-center bg-white shadow-sm">
-                        <p id="stat-requests" class="text-3xl font-bold text-blue-600">0</p>
-                        <p class="text-[10px] text-gray-500 uppercase font-bold mt-2">API Requests</p>
+                    <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm text-center">
+                        <span id="stat-reqs" class="text-3xl font-bold text-blue-600">0</span>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">Packets Sent</p>
                     </div>
                 </div>
 
-                <div class="panel p-5 rounded-2xl h-56 flex flex-col terminal-bg shadow-2xl">
-                    <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-3">
-                        <p class="text-[10px] text-gray-500 font-mono uppercase font-bold">System Output Console</p>
-                        <div class="flex gap-1.5">
-                            <div class="w-2 h-2 rounded-full bg-red-900"></div>
-                            <div class="w-2 h-2 rounded-full bg-yellow-900"></div>
-                            <div class="w-2 h-2 rounded-full bg-green-900"></div>
-                        </div>
+                <div class="p-5 rounded-2xl h-56 terminal-bg flex flex-col shadow-xl">
+                    <div class="flex justify-between border-b border-gray-800 pb-2 mb-2">
+                        <span class="text-[10px] text-gray-500 font-mono">LIVE_TERMINAL</span>
+                        <span class="text-[9px] text-blue-400 font-mono italic">SECURE_CHANNEL</span>
                     </div>
-                    <div id="console-logs" class="flex-1 overflow-y-auto text-[11px] font-mono text-gray-400 space-y-2">
-                        <p class="text-blue-500"># Boot sequence complete...</p>
-                        <p class="text-green-500"># Cloudflare Worker handshaking verified...</p>
+                    <div id="console-logs" class="flex-1 overflow-y-auto font-mono text-[11px] text-gray-300 space-y-1">
+                        <p class="text-blue-400">> System Ready.</p>
                     </div>
                 </div>
             </div>
 
             <div id="tab-spammer" class="tab-content space-y-5">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-xl">✉️</div>
-                    <h2 class="font-bold text-gray-900 text-xl">Mass Spammer</h2>
-                </div>
-                
-                <div class="panel p-6 rounded-2xl space-y-5 bg-white shadow-sm">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="text-blue-500">✉️</span> Mass Messenger
+                </h2>
+                <div class="p-6 rounded-3xl bg-white border border-gray-100 shadow-sm space-y-5">
                     <div>
-                        <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Channel Identifier</label>
-                        <input type="text" id="spam-channel" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm" placeholder="Paste Discord Channel ID...">
+                        <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">Channel ID</label>
+                        <input type="text" id="spam-id" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm" placeholder="Target ID">
                     </div>
                     <div>
-                        <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Message Content</label>
-                        <textarea id="spam-message" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm h-32 resize-none" placeholder="Write spam payload here..."></textarea>
+                        <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">Message</label>
+                        <textarea id="spam-msg" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm h-32 resize-none" placeholder="Payload..."></textarea>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Amount</label>
-                            <input type="number" id="spam-count" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm text-center" value="10">
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Delay (ms)</label>
-                            <input type="number" id="spam-delay" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm text-center" value="500">
-                        </div>
+                        <input type="number" id="spam-cnt" class="hub-input p-4 rounded-xl text-center text-sm font-bold" value="5">
+                        <input type="number" id="spam-dly" class="hub-input p-4 rounded-xl text-center text-sm font-bold" value="500">
                     </div>
-                    <button onclick="dispatchSpam()" class="hub-btn w-full py-5 rounded-xl mt-4 shadow-lg shadow-blue-50">
-                        Start Mass Strike
-                    </button>
+                    <button onclick="dispatchSpam()" class="hub-btn w-full py-5 rounded-2xl text-sm shadow-blue-50">DISPATCH ATTACK</button>
                 </div>
             </div>
 
-            <div id="tab-nuke" class="tab-content space-y-5">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-gray-700 text-xl">⚙️</div>
-                    <h2 class="font-bold text-gray-900 text-xl">Management Tools</h2>
-                </div>
-
-                <div class="panel p-6 rounded-2xl space-y-5 bg-white shadow-sm">
-                    <div>
-                        <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Guild ID (Server)</label>
-                        <input type="text" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm" placeholder="Paste Target Server ID...">
+            <div id="tab-manage" class="tab-content space-y-5">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="text-gray-500">⚙️</span> Server Management
+                </h2>
+                <div class="p-6 rounded-3xl bg-white border border-gray-100 shadow-sm space-y-4">
+                    <input type="text" class="hub-input w-full p-4 rounded-xl text-sm" placeholder="Guild (Server) ID">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                            <span class="text-sm font-bold text-gray-600">Delete Channels</span>
+                            <input type="checkbox" class="w-5 h-5 accent-blue-600">
+                        </div>
                     </div>
-                    
-                    <div class="space-y-3 pt-2">
-                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <span class="text-sm font-bold text-gray-700">Wipe All Channels</span>
-                            <input type="checkbox" class="w-6 h-6 accent-blue-600 rounded-lg">
-                        </label>
-                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <span class="text-sm font-bold text-gray-700">Mass Ban Session</span>
-                            <input type="checkbox" class="w-6 h-6 accent-blue-600 rounded-lg">
-                        </label>
-                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <span class="text-sm font-bold text-gray-700">Clear Global Roles</span>
-                            <input type="checkbox" class="w-6 h-6 accent-blue-600 rounded-lg">
-                        </label>
-                    </div>
-
-                    <button onclick="logAction('Management sequence started...')" class="w-full bg-gray-950 text-white font-bold py-5 rounded-xl mt-4 uppercase tracking-widest text-xs shadow-xl active:scale-95">
-                        Execute Sequence
-                    </button>
+                    <button onclick="logAction('Sequence Initiated.')" class="w-full bg-gray-950 text-white font-bold py-5 rounded-2xl text-sm uppercase tracking-widest">Execute</button>
                 </div>
             </div>
 
             <div id="tab-settings" class="tab-content space-y-5">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 text-xl">🔧</div>
-                    <h2 class="font-bold text-gray-900 text-xl">Configuration</h2>
+                <div class="p-6 rounded-3xl bg-white border border-gray-100 shadow-sm space-y-4">
+                    <div class="flex justify-between border-b border-gray-50 pb-3">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">Version</span>
+                        <span class="text-xs font-mono text-blue-600">2.4.0</span>
+                    </div>
+                    <button onclick="location.reload()" class="w-full py-4 text-red-500 font-bold text-xs uppercase tracking-widest mt-4">Log Out</button>
                 </div>
-                
-                <div class="panel p-6 rounded-2xl space-y-5 bg-white shadow-sm text-sm">
-                    <div class="flex justify-between items-center border-b border-gray-50 pb-4">
-                        <span class="font-bold text-gray-500 uppercase text-[10px]">App Engine</span>
-                        <span class="font-mono text-xs text-blue-600">v2.4.0-Stable</span>
-                    </div>
-                    <div class="flex justify-between items-center border-b border-gray-50 pb-4">
-                        <span class="font-bold text-gray-500 uppercase text-[10px]">Worker URL</span>
-                        <span class="font-mono text-[9px] text-gray-400">*.workers.dev</span>
-                    </div>
-                    <div class="pb-2">
-                        <p class="font-bold text-gray-500 uppercase text-[10px] mb-3">Encrypted Session Token</p>
-                        <div class="bg-gray-950 p-4 rounded-xl text-blue-400 font-mono text-[10px] break-all blur-[4px] hover:blur-none transition-all cursor-pointer shadow-inner border border-gray-800">
-                            Session active. Click to reveal.
-                        </div>
-                    </div>
-                    
-                    <button onclick="location.reload()" class="w-full bg-white text-red-600 font-bold py-4 rounded-xl mt-6 border border-red-100 hover:bg-red-50 transition-colors">
-                        DESTROY SESSION
-                    </button>
+
+                <div class="text-center pt-10">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[3px] mb-1">DOOMHUB PROJECT</p>
+                    <p class="text-[9px] text-gray-300 font-medium">© 2024-2026 Developed by Tader. All rights reserved.</p>
                 </div>
             </div>
 
         </main>
 
-        <nav class="panel fixed bottom-0 left-0 right-0 flex justify-around p-3 pb-8 z-50 border-t border-gray-100 bg-white/95 backdrop-blur-md shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-btn active flex-1 flex flex-col items-center py-2">
-                <span class="text-2xl mb-1">🏠</span>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Dashboard</span>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around p-3 pb-8 z-50">
+            <button onclick="switchTab('home')" id="nav-home" class="nav-btn active flex-1 flex flex-col items-center">
+                <span class="text-2xl">🏠</span>
+                <span class="text-[9px] font-bold uppercase mt-1">Home</span>
             </button>
-            <button onclick="switchTab('spammer')" id="nav-spammer" class="nav-btn flex-1 flex flex-col items-center py-2">
-                <span class="text-2xl mb-1">✉️</span>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Spam</span>
+            <button onclick="switchTab('spammer')" id="nav-spammer" class="nav-btn flex-1 flex flex-col items-center">
+                <span class="text-2xl">✉️</span>
+                <span class="text-[9px] font-bold uppercase mt-1">Spam</span>
             </button>
-            <button onclick="switchTab('nuke')" id="nav-nuke" class="nav-btn flex-1 flex flex-col items-center py-2">
-                <span class="text-2xl mb-1">⚙️</span>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Manage</span>
+            <button onclick="switchTab('manage')" id="nav-manage" class="nav-btn flex-1 flex flex-col items-center">
+                <span class="text-2xl">⚙️</span>
+                <span class="text-[9px] font-bold uppercase mt-1">Manage</span>
             </button>
-            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex-1 flex flex-col items-center py-2">
-                <span class="text-2xl mb-1">🔧</span>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Settings</span>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex-1 flex flex-col items-center">
+                <span class="text-2xl">🔧</span>
+                <span class="text-[9px] font-bold uppercase mt-1">Set</span>
             </button>
         </nav>
-
     </div>
 
     <script>
-        let activeToken = "";
-        let tasksCount = 0;
-        let requestsCount = 0;
+        let _TOKEN = "";
+        let _NAME = "";
+        let _TASKS = 0;
+        let _REQS = 0;
 
-        // Switch Tabs
-        window.switchTab = function(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            document.getElementById('nav-' + tabId).classList.add('active');
-            logAction(`Module Activated: ${tabId.toUpperCase()}`);
+        window.switchTab = (id) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${id}`).classList.add('active');
+            document.getElementById(`nav-${id}`).classList.add('active');
+            logAction(`Switched to ${id.toUpperCase()}`);
         };
 
-        // Log to Terminal
-        window.logAction = function(msg) {
-            const logs = document.getElementById('console-logs');
+        window.logAction = (msg) => {
+            const box = document.getElementById('console-logs');
             const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            logs.innerHTML += `<p><span class="text-gray-600">[${time}]</span> <span class="text-blue-400">>></span> ${msg}</p>`;
-            logs.scrollTop = logs.scrollHeight;
+            box.innerHTML += `<p><span class="text-gray-500">[${time}]</span> <span class="text-blue-500">></span> ${msg}</p>`;
+            box.scrollTop = box.scrollHeight;
         };
 
-        // Login System
-        window.setupSystem = async function() {
-            const tInput = document.getElementById('token');
+        window.setupSystem = async () => {
+            const nameInput = document.getElementById('display-name');
+            const tokenInput = document.getElementById('token');
             const btn = document.getElementById('login-btn');
             
-            if(!tInput.value) {
-                btn.innerHTML = "TOKEN MISSING!";
-                setTimeout(() => btn.innerHTML = "Initialize System", 1500);
+            if(!nameInput.value || !tokenInput.value) {
+                alert("Please fill all fields!");
                 return;
             }
 
-            activeToken = tInput.value;
-            btn.innerHTML = "AUTHENTICATING...";
+            _NAME = nameInput.value;
+            _TOKEN = tokenInput.value;
+            btn.innerText = "CONNECTING...";
             btn.disabled = true;
 
             try {
                 const res = await fetch('/api/setup', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({token: activeToken})
+                    body: JSON.stringify({token: _TOKEN})
                 });
                 const data = await res.json();
                 
                 if(data.status === 'success') {
-                    document.getElementById('setup-screen').style.display = 'none';
+                    // İsim Bilgilerini UI'a Aktar
+                    document.getElementById('welcome-text').innerText = _NAME;
+                    document.getElementById('user-avatar').innerText = _NAME.substring(0, 2);
+                    
+                    document.getElementById('setup-screen').classList.add('hidden');
                     document.getElementById('main-app').classList.remove('hidden');
                     switchTab('home');
-                    logAction(`Handshake verified. Admin: ${data.user}`);
+                    logAction(`Welcome, operator ${_NAME}. Session verified.`);
                 } else {
-                    alert('Error: ' + data.message);
+                    alert("Invalid Token!");
                     btn.disabled = false;
-                    btn.innerHTML = "Initialize System";
+                    btn.innerText = "INITIALIZE CORE";
                 }
-            } catch (err) {
-                alert("Server Connection Failed.");
+            } catch (e) {
+                alert("Connection Failed!");
                 btn.disabled = false;
-                btn.innerHTML = "Initialize System";
+                btn.innerText = "INITIALIZE CORE";
             }
         };
 
-        // Spam Dispatcher
-        window.dispatchSpam = async function() {
-            const channel = document.getElementById('spam-channel').value;
-            const message = document.getElementById('spam-message').value;
-            const count = document.getElementById('spam-count').value;
-            const delay = document.getElementById('spam-delay').value;
+        window.dispatchSpam = async () => {
+            const id = document.getElementById('spam-id').value;
+            const msg = document.getElementById('spam-msg').value;
+            const count = document.getElementById('spam-cnt').value;
+            const delay = document.getElementById('spam-dly').value;
 
-            if(!channel || !message) return alert("Fill all fields!");
+            if(!id || !msg) return alert("Missing fields!");
 
-            logAction(`Task queued: Spam ${count} messages to ${channel}`);
-            tasksCount++;
-            document.getElementById('stat-tasks').innerText = tasksCount;
+            logAction(`Task: Send ${count} payloads to ${id}`);
+            _TASKS++;
+            document.getElementById('stat-tasks').innerText = _TASKS;
 
             try {
                 const res = await fetch('/api/spam', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        token: activeToken,
-                        channel_id: channel,
-                        message: message,
+                        token: _TOKEN,
+                        channel_id: id,
+                        message: msg,
                         count: count,
                         delay: delay
                     })
                 });
                 const data = await res.json();
                 if(data.status === 'completed') {
-                    logAction(`Task Complete: ${count} payloads delivered.`);
-                    requestsCount += parseInt(count);
-                    document.getElementById('stat-requests').innerText = requestsCount;
+                    logAction("Strike Successful.");
+                    _REQS += parseInt(count);
+                    document.getElementById('stat-reqs').innerText = _REQS;
                 }
-            } catch (e) {
-                logAction("Task Error: Connection lost.");
-            }
+            } catch (e) { logAction("Critical Error: Connection lost."); }
         };
     </script>
 </body>
