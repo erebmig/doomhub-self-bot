@@ -2,254 +2,337 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoomHub | Control Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DOOMHUB | MOBILE TERMINAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2d3436;
-            --accent: #0984e3;
-            --bg: #f5f6fa;
-            --card: #ffffff;
-            --border: #dcdde1;
+            --hub-blue: #3b82f6; 
+            --hub-bg: #ffffff;
+            --hub-panel: #f9fafb;
+            --hub-text: #1f2937;
+            --hub-border: #e5e7eb;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: var(--bg);
-            color: var(--primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        body { 
+            background: var(--hub-bg); 
+            color: var(--hub-text); 
+            font-family: 'Rajdhani', sans-serif; 
+            overflow: hidden; /* Prevents body bounce on mobile */
             height: 100vh;
-            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--hub-bg); }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px;}
 
-        /* --- SETUP SCREEN --- */
-        #setup-screen {
-            background: var(--card);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            width: 400px;
-            text-align: center;
-            border: 1px solid var(--border);
-            z-index: 100;
-        }
-
-        .setup-logo {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-            color: var(--primary);
-        }
-
-        .theme-info {
-            font-size: 13px;
-            color: #7f8c8d;
-            margin-bottom: 25px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            box-sizing: border-box;
-            background: #fafafa;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus { border-color: var(--accent); }
-
-        .btn-get-started {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s;
-        }
-
-        .btn-get-started:hover { background: #000; transform: translateY(-2px); }
-
-        /* --- DASHBOARD --- */
-        #dashboard {
-            display: none;
-            width: 100%;
-            height: 100%;
-            flex-direction: row;
-        }
-
-        .sidebar {
-            width: 260px;
-            background: white;
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .nav-item {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-            color: #636e72;
-        }
-
-        .nav-item:hover { background: #f1f2f6; color: var(--primary); }
-        .nav-item.active { background: var(--primary); color: white; }
-
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .card-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .action-card {
-            background: white;
-            border: 1px solid var(--border);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-
-        .console {
-            background: #1e272e;
-            color: #0be881;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            height: 150px;
-            margin-top: 25px;
-            font-size: 12px;
-            overflow-y: auto;
-            border: 1px solid #333;
-        }
-
-        h3 { margin-top: 0; font-size: 16px; color: #2d3436; }
+        .clean-title { font-family: 'Orbitron', sans-serif; letter-spacing: -1px; }
+        
+        /* Tab Transitions */
+        .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        .nav-btn { color: #9ca3af; transition: all 0.2s; position: relative; }
+        .nav-btn.active { color: var(--hub-blue); }
+        .nav-btn.active::after { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 3px; background: var(--hub-blue); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        
+        .hub-input { background: #ffffff !important; border: 1px solid var(--hub-border) !important; color: var(--hub-text) !important; }
+        .hub-input:focus { outline: none; border-color: var(--hub-blue) !important; box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); }
+        
+        .hub-btn { background: var(--hub-blue); color: white; border: 1px solid #2563eb; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; transition: 0.1s; }
+        .hub-btn:active { transform: scale(0.96); }
+        
+        .panel { background: var(--hub-panel); border: 1px solid var(--hub-border); }
+        
+        /* Terminal Styling */
+        .terminal-bg { background: #0a0a0b; }
     </style>
 </head>
-<body>
+<body class="flex flex-col">
 
-    <div id="setup-screen">
-        <div class="setup-logo">DOOMHUB</div>
-        <div class="theme-info">White Theme Active</div>
-        
-        <input type="text" id="user-name" placeholder="Enter Name (e.g. yoyo)">
-        <input type="password" id="user-token" placeholder="Enter Discord Token">
-        
-        <button class="btn-get-started" onclick="startApp()">Get Started</button>
+    <div id="setup-screen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6">
+        <div class="text-center mb-12">
+            <h1 class="clean-title text-6xl text-gray-950 tracking-tighter">DOOMHUB</h1>
+            <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] mt-2 font-bold">Encrypted Deployment</p>
+        </div>
+
+        <div class="panel w-full max-w-sm p-8 rounded-2xl shadow-2xl border border-gray-100">
+            <div class="mb-6 flex items-center justify-between border-b border-gray-100 pb-4">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Master Authorization</span>
+                <span class="w-3 h-3 bg-green-500 rounded-full animate-ping"></span>
+            </div>
+            <input type="password" id="token" placeholder="ENTER DISCORD TOKEN" 
+                class="hub-input w-full p-5 rounded-xl mb-5 text-center tracking-widest text-sm shadow-inner font-mono">
+            <button onclick="setupSystem()" id="login-btn" class="hub-btn w-full py-5 rounded-xl shadow-lg shadow-blue-100 text-sm">
+                Initialize System
+            </button>
+        </div>
     </div>
 
-    <div id="dashboard">
-        <div class="sidebar">
-            <div class="setup-logo" style="font-size: 20px; text-align: left; margin-bottom: 40px;">DOOMHUB</div>
-            <div class="nav-item active">Dashboard</div>
-            <div class="nav-item">Server Actions</div>
-            <div class="nav-item">Webhook Spammer</div>
-            <div class="nav-item">Post Spammer</div>
-            <div class="nav-item">Settings</div>
-            <div style="margin-top: auto; font-size: 12px; color: #b2bec3; padding: 10px;">User: <span id="display-name" style="color:var(--accent)"></span></div>
-        </div>
+    <div id="main-app" class="hidden flex flex-col h-screen">
+        
+        <header class="panel p-5 sticky top-0 z-50 flex justify-between items-center bg-white/90 backdrop-blur-md">
+            <h1 class="clean-title text-2xl text-gray-900">DOOMHUB</h1>
+            <div class="flex items-center gap-3">
+                <div class="flex flex-col items-end">
+                    <span class="text-[9px] text-green-600 font-bold uppercase italic">Proxy: long-sound-d421</span>
+                    <span class="text-[8px] text-gray-400 font-mono">Status: Secure</span>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-600 shadow-inner">AD</div>
+            </div>
+        </header>
 
-        <div class="main-content">
-            <h1 id="welcome-msg" style="margin-bottom: 30px;">Welcome back</h1>
-            
-            <div class="card-row">
-                <div class="action-card">
-                    <h3>Server Nuker</h3>
-                    <input type="text" id="guild_id" placeholder="Target Guild ID">
-                    <button onclick="sendAction('nuke')" style="background: #ff7675; color: white; border:none; padding:12px; border-radius:6px; cursor:pointer; width:100%; font-weight:bold;">Nuke Channels</button>
+        <main class="flex-1 overflow-y-auto p-5 pb-32 bg-gray-50">
+
+            <div id="tab-home" class="tab-content active space-y-5">
+                <div class="panel p-6 rounded-2xl flex justify-between items-center border-l-[6px] border-l-blue-600 bg-white shadow-sm">
+                    <div>
+                        <p class="text-[11px] text-gray-400 uppercase font-bold tracking-widest">Mainframe Status</p>
+                        <p class="font-bold text-2xl text-gray-900">SYSTEMS READY</p>
+                    </div>
+                    <span class="text-4xl">⚡</span>
                 </div>
 
-                <div class="action-card">
-                    <h3>Webhook Attack</h3>
-                    <input type="text" id="webhook_url" placeholder="Webhook URL">
-                    <input type="text" id="webhook_msg" placeholder="Message content">
-                    <input type="number" id="webhook_count" placeholder="Amount" value="50">
-                    <button onclick="sendAction('webhook')" style="background: var(--primary); color: white; border:none; padding:12px; border-radius:6px; cursor:pointer; width:100%; font-weight:bold;">Start Spam</button>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="panel p-6 rounded-2xl text-center bg-white shadow-sm">
+                        <p id="stat-tasks" class="text-3xl font-bold text-blue-600">0</p>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mt-2">Active Tasks</p>
+                    </div>
+                    <div class="panel p-6 rounded-2xl text-center bg-white shadow-sm">
+                        <p id="stat-requests" class="text-3xl font-bold text-blue-600">0</p>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mt-2">API Requests</p>
+                    </div>
+                </div>
+
+                <div class="panel p-5 rounded-2xl h-56 flex flex-col terminal-bg shadow-2xl">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-3">
+                        <p class="text-[10px] text-gray-500 font-mono uppercase font-bold">System Output Console</p>
+                        <div class="flex gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-red-900"></div>
+                            <div class="w-2 h-2 rounded-full bg-yellow-900"></div>
+                            <div class="w-2 h-2 rounded-full bg-green-900"></div>
+                        </div>
+                    </div>
+                    <div id="console-logs" class="flex-1 overflow-y-auto text-[11px] font-mono text-gray-400 space-y-2">
+                        <p class="text-blue-500"># Boot sequence complete...</p>
+                        <p class="text-green-500"># Cloudflare Worker handshaking verified...</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="console" id="log-box">
-                [SYSTEM] DoomHub Engine Initialized...<br>
-                [SYSTEM] Waiting for commands...
+            <div id="tab-spammer" class="tab-content space-y-5">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-xl">✉️</div>
+                    <h2 class="font-bold text-gray-900 text-xl">Mass Spammer</h2>
+                </div>
+                
+                <div class="panel p-6 rounded-2xl space-y-5 bg-white shadow-sm">
+                    <div>
+                        <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Channel Identifier</label>
+                        <input type="text" id="spam-channel" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm" placeholder="Paste Discord Channel ID...">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Message Content</label>
+                        <textarea id="spam-message" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm h-32 resize-none" placeholder="Write spam payload here..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Amount</label>
+                            <input type="number" id="spam-count" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm text-center" value="10">
+                        </div>
+                        <div>
+                            <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Delay (ms)</label>
+                            <input type="number" id="spam-delay" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm text-center" value="500">
+                        </div>
+                    </div>
+                    <button onclick="dispatchSpam()" class="hub-btn w-full py-5 rounded-xl mt-4 shadow-lg shadow-blue-50">
+                        Start Mass Strike
+                    </button>
+                </div>
             </div>
-        </div>
+
+            <div id="tab-nuke" class="tab-content space-y-5">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-gray-700 text-xl">⚙️</div>
+                    <h2 class="font-bold text-gray-900 text-xl">Management Tools</h2>
+                </div>
+
+                <div class="panel p-6 rounded-2xl space-y-5 bg-white shadow-sm">
+                    <div>
+                        <label class="text-[11px] text-gray-500 uppercase font-bold ml-1">Guild ID (Server)</label>
+                        <input type="text" class="hub-input w-full p-4 rounded-xl mt-1.5 text-sm" placeholder="Paste Target Server ID...">
+                    </div>
+                    
+                    <div class="space-y-3 pt-2">
+                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <span class="text-sm font-bold text-gray-700">Wipe All Channels</span>
+                            <input type="checkbox" class="w-6 h-6 accent-blue-600 rounded-lg">
+                        </label>
+                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <span class="text-sm font-bold text-gray-700">Mass Ban Session</span>
+                            <input type="checkbox" class="w-6 h-6 accent-blue-600 rounded-lg">
+                        </label>
+                        <label class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <span class="text-sm font-bold text-gray-700">Clear Global Roles</span>
+                            <input type="checkbox" class="w-6 h-6 accent-blue-600 rounded-lg">
+                        </label>
+                    </div>
+
+                    <button onclick="logAction('Management sequence started...')" class="w-full bg-gray-950 text-white font-bold py-5 rounded-xl mt-4 uppercase tracking-widest text-xs shadow-xl active:scale-95">
+                        Execute Sequence
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="tab-content space-y-5">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 text-xl">🔧</div>
+                    <h2 class="font-bold text-gray-900 text-xl">Configuration</h2>
+                </div>
+                
+                <div class="panel p-6 rounded-2xl space-y-5 bg-white shadow-sm text-sm">
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-4">
+                        <span class="font-bold text-gray-500 uppercase text-[10px]">App Engine</span>
+                        <span class="font-mono text-xs text-blue-600">v2.4.0-Stable</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-4">
+                        <span class="font-bold text-gray-500 uppercase text-[10px]">Worker URL</span>
+                        <span class="font-mono text-[9px] text-gray-400">*.workers.dev</span>
+                    </div>
+                    <div class="pb-2">
+                        <p class="font-bold text-gray-500 uppercase text-[10px] mb-3">Encrypted Session Token</p>
+                        <div class="bg-gray-950 p-4 rounded-xl text-blue-400 font-mono text-[10px] break-all blur-[4px] hover:blur-none transition-all cursor-pointer shadow-inner border border-gray-800">
+                            Session active. Click to reveal.
+                        </div>
+                    </div>
+                    
+                    <button onclick="location.reload()" class="w-full bg-white text-red-600 font-bold py-4 rounded-xl mt-6 border border-red-100 hover:bg-red-50 transition-colors">
+                        DESTROY SESSION
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <nav class="panel fixed bottom-0 left-0 right-0 flex justify-around p-3 pb-8 z-50 border-t border-gray-100 bg-white/95 backdrop-blur-md shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
+            <button onclick="switchTab('home')" id="nav-home" class="nav-btn active flex-1 flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">🏠</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Dashboard</span>
+            </button>
+            <button onclick="switchTab('spammer')" id="nav-spammer" class="nav-btn flex-1 flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">✉️</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Spam</span>
+            </button>
+            <button onclick="switchTab('nuke')" id="nav-nuke" class="nav-btn flex-1 flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">⚙️</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Manage</span>
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex-1 flex flex-col items-center py-2">
+                <span class="text-2xl mb-1">🔧</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Settings</span>
+            </button>
+        </nav>
+
     </div>
 
     <script>
-        function writeLog(msg) {
-            const logBox = document.getElementById('log-box');
-            const time = new Date().toLocaleTimeString();
-            logBox.innerHTML += `<br>[${time}] ${msg}`;
-            logBox.scrollTop = logBox.scrollHeight;
-        }
+        let activeToken = "";
+        let tasksCount = 0;
+        let requestsCount = 0;
 
-        async function startApp() {
-            const name = document.getElementById('user-name').value;
-            const token = document.getElementById('user-token').value;
+        // Switch Tabs
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('nav-' + tabId).classList.add('active');
+            logAction(`Module Activated: ${tabId.toUpperCase()}`);
+        };
 
-            if(!name || !token) {
-                alert("Please fill all fields!");
+        // Log to Terminal
+        window.logAction = function(msg) {
+            const logs = document.getElementById('console-logs');
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            logs.innerHTML += `<p><span class="text-gray-600">[${time}]</span> <span class="text-blue-400">>></span> ${msg}</p>`;
+            logs.scrollTop = logs.scrollHeight;
+        };
+
+        // Login System
+        window.setupSystem = async function() {
+            const tInput = document.getElementById('token');
+            const btn = document.getElementById('login-btn');
+            
+            if(!tInput.value) {
+                btn.innerHTML = "TOKEN MISSING!";
+                setTimeout(() => btn.innerHTML = "Initialize System", 1500);
                 return;
             }
 
-            // Backend'e gönderip doğrulama yapıyoruz
-            const response = await fetch('/api/setup', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name, token})
-            });
+            activeToken = tInput.value;
+            btn.innerHTML = "AUTHENTICATING...";
+            btn.disabled = true;
 
-            if(response.ok) {
-                document.getElementById('setup-screen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'flex';
-                document.getElementById('display-name').innerText = name;
-                document.getElementById('welcome-msg').innerText = "Welcome back, " + name;
-                writeLog("Authenticated as " + name);
-            } else {
-                alert("Invalid Token! Authentication failed.");
+            try {
+                const res = await fetch('/api/setup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({token: activeToken})
+                });
+                const data = await res.json();
+                
+                if(data.status === 'success') {
+                    document.getElementById('setup-screen').style.display = 'none';
+                    document.getElementById('main-app').classList.remove('hidden');
+                    switchTab('home');
+                    logAction(`Handshake verified. Admin: ${data.user}`);
+                } else {
+                    alert('Error: ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = "Initialize System";
+                }
+            } catch (err) {
+                alert("Server Connection Failed.");
+                btn.disabled = false;
+                btn.innerHTML = "Initialize System";
             }
-        }
+        };
 
-        async function sendAction(type) {
-            let data = { type: type };
-            
-            if(type === 'webhook') {
-                data.url = document.getElementById('webhook_url').value;
-                data.msg = document.getElementById('webhook_msg').value;
-                data.count = document.getElementById('webhook_count').value;
-            } else if(type === 'nuke') {
-                data.guild_id = document.getElementById('guild_id').value;
+        // Spam Dispatcher
+        window.dispatchSpam = async function() {
+            const channel = document.getElementById('spam-channel').value;
+            const message = document.getElementById('spam-message').value;
+            const count = document.getElementById('spam-count').value;
+            const delay = document.getElementById('spam-delay').value;
+
+            if(!channel || !message) return alert("Fill all fields!");
+
+            logAction(`Task queued: Spam ${count} messages to ${channel}`);
+            tasksCount++;
+            document.getElementById('stat-tasks').innerText = tasksCount;
+
+            try {
+                const res = await fetch('/api/spam', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        token: activeToken,
+                        channel_id: channel,
+                        message: message,
+                        count: count,
+                        delay: delay
+                    })
+                });
+                const data = await res.json();
+                if(data.status === 'completed') {
+                    logAction(`Task Complete: ${count} payloads delivered.`);
+                    requestsCount += parseInt(count);
+                    document.getElementById('stat-requests').innerText = requestsCount;
+                }
+            } catch (e) {
+                logAction("Task Error: Connection lost.");
             }
-
-            await fetch('/api/action', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            
-            writeLog("Action '" + type + "' sent to backend.");
-        }
+        };
     </script>
 </body>
 </html>
-
